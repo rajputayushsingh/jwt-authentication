@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JWT Authentication</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            text-align: center;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Register</h2>
+
+        <input
+            id="registerName"
+            type="text"
+            placeholder="Name"
+        >
+
+        <input
+            id="registerEmail"
+            type="email"
+            placeholder="Email"
+        >
+
+        <input
+            id="registerPassword"
+            type="password"
+            placeholder="Password"
+        >
+
+        <button onclick="register()">
+            Register
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Login</h2>
+
+        <input
+            id="loginEmail"
+            type="email"
+            placeholder="Email"
+        >
+
+        <input
+            id="loginPassword"
+            type="password"
+            placeholder="Password"
+        >
+
+        <button onclick="login()">
+            Login
+        </button>
+
+        <button onclick="getProfile()">
+            Protected Profile
+        </button>
+
+        <button onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+    <p id="message"></p>
+
+</div>
+
+
+<script>
+
+async function register() {
+
+    const name =
+        document.getElementById("registerName").value;
+
+    const email =
+        document.getElementById("registerEmail").value;
+
+    const password =
+        document.getElementById("registerPassword").value;
+
+
+    const response = await fetch(
+        "/api/auth/register",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                name,
+                email,
+                password
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("message").innerText =
+        data.message;
+}
+
+
+async function login() {
+
+    const email =
+        document.getElementById("loginEmail").value;
+
+    const password =
+        document.getElementById("loginPassword").value;
+
+
+    const response = await fetch(
+        "/api/auth/login",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            credentials: "include",
+
+            body: JSON.stringify({
+                email,
+                password
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("message").innerText =
+        data.message;
+}
+
+
+async function getProfile() {
+
+    const response = await fetch(
+        "/api/profile",
+        {
+            credentials: "include"
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("message").innerText =
+        JSON.stringify(data);
+}
+
+
+async function logout() {
+
+    const response = await fetch(
+        "/api/auth/logout",
+        {
+            method: "POST",
+            credentials: "include"
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("message").innerText =
+        data.message;
+}
+
+</script>
+
+</body>
+
+</html>
